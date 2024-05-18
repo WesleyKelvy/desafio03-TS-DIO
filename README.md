@@ -6,6 +6,11 @@ desenvolvido por [Nathally Souza](https://github.com/nathyts)
 ### Tecnologias
 - Typescript
 
+### Como fazer login
+
+Use o e-mail: admin@dio.bank
+E a senha: 123456
+
 ### Como rodar o projeto
 
 1 - Clone o repositório
