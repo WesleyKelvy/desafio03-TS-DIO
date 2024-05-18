@@ -1,11 +1,11 @@
 import { Center, SimpleGrid, Spinner } from "@chakra-ui/react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { api } from "../api";
 import CardInfo from "../components/CardInfo";
 import { AppContext } from "../components/AppContext";
 
-interface UserData {
+export interface UserData {
   email: string;
   password: string;
   name: string;
@@ -14,43 +14,42 @@ interface UserData {
 }
 
 const Conta = () => {
-  const [userData, setUserData] = useState<null | UserData>();
+  const { user, isLoggedIn, setUser } = useContext(AppContext);
+  //const [userData, setUserData] = useState<null | UserData>();
   const { id } = useParams();
   const navigate = useNavigate();
-
-  const { isLoggedIn } = useContext(AppContext);
 
   !isLoggedIn && navigate("/");
 
   useEffect(() => {
     const getData = async () => {
-      const data: any | UserData = await api;
-      setUserData(data);
+      const data = (await api) as UserData;
+      setUser(data);
     };
 
     getData();
-  }, []);
+  }, [setUser]);
 
   const actualData = new Date();
 
-  if (userData && id !== userData.id) {
+  if (user && id !== user.id) {
     navigate("/");
   }
 
   return (
     <Center>
       <SimpleGrid columns={2} spacing={8} paddingTop={16}>
-        {userData === undefined || userData === null ? (
+        {user === undefined ? (
           <Center>
             <Spinner size="xl" color="white" />
           </Center>
         ) : (
           <>
             <CardInfo
-              mainContent={`Bem vinda ${userData?.name}`}
+              mainContent={`Bem vindo(a) ${user.name}`}
               content={`${actualData.getDay()} / ${actualData.getMonth()} / ${actualData.getFullYear()} ${actualData.getHours()}:${actualData.getMinutes()}`}
             />
-            <CardInfo mainContent="Saldo" content={`R$ ${userData.balance}`} />
+            <CardInfo mainContent="Saldo" content={`R$ ${user.balance}`} />
           </>
         )}
       </SimpleGrid>

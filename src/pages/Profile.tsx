@@ -1,40 +1,32 @@
 import { Center, SimpleGrid, Spinner } from "@chakra-ui/react";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { api } from "../api";
 import { AppContext } from "../components/AppContext";
 import CardInfo from "../components/CardInfo";
-
-export type User = {
-  email: string;
-  password: string;
-  name: string;
-  balance: number;
-  id: string;
-};
+import { UserData } from "./Conta";
 
 export const Profile = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [userData, setUserData] = useState<null | User>();
+  const { user, isLoggedIn, setUser } = useContext(AppContext);
 
-  const { isLoggedIn } = useContext(AppContext);
 
   useEffect(() => {
     !isLoggedIn && navigate("/");
 
     const getData = async () => {
       try {
-        const data = (await api) as User;
-        setUserData(data);
+        const data = (await api) as UserData;
+        setUser(data);
       } catch (error) {
         alert("Failed to fetch user data!");
       }
     };
     getData();
-  }, [isLoggedIn, navigate]);
+  }, [isLoggedIn, navigate, setUser]);
 
-  if (userData && id !== userData.id) {
+  if (user && id !== user.id) {
     navigate("/");
   }
   
@@ -47,15 +39,15 @@ export const Profile = () => {
       alignSelf="center"
       alignItems="center"
     >
-      {userData === undefined || userData === null ? (
+      {user === undefined ? (
         <Center>
           <Spinner size="xl" color="white" />
         </Center>
       ) : (
         <>
           <CardInfo
-            mainContent={`${userData?.name}`}
-            content={`${userData?.email}`}
+            mainContent={`${user.name}`}
+            content={`${user.email}`}
             getBack={`/conta/${id}`}
           />
         </>

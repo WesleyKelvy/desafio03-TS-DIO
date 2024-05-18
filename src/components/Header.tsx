@@ -7,6 +7,7 @@ import { AppContext } from "./AppContext";
 export const Header = () => {
   const { isLoggedIn, setIsLoggedIn } = useContext(AppContext);
   const navigate = useNavigate();
+  
   const profile = () => {
     isLoggedIn && navigate("/profile/1");
   };
